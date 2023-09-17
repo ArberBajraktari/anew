@@ -6,6 +6,28 @@ import { redirect } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { useEffect, useState } from "react"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogFooter
+} from "@/components/ui/dialog"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
+  
+import { Input } from "@/components/ui/input"
+  
+  
 
 
 export default function NavBar() {
@@ -70,7 +92,23 @@ export default function NavBar() {
                 </div>
                 <div className="flex items-center px-4">
                     <div className="flex-shrink-0">
-                        <Button variant="outline" className='bg-blue-500 text-white'>Create</Button>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button variant="outline">Create</Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px]">
+                            <Tabs defaultValue="project" className="w-[400px]">
+                                <TabsList>
+                                    <TabsTrigger value="project">Project</TabsTrigger>
+                                    <TabsTrigger value="chapter">Chapter</TabsTrigger>
+                                    <TabsTrigger value="task">Task</TabsTrigger>
+                                </TabsList>
+                                <TabsContent value="project">Add project here</TabsContent>
+                                <TabsContent value="chapter">Add chapter here</TabsContent>
+                                <TabsContent value="task">Add task here</TabsContent>
+                            </Tabs>
+                        </DialogContent>
+                        </Dialog>
                     </div>
                 </div>
                 <div className="flex items-center px-4">
