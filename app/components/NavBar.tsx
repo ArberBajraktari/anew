@@ -13,22 +13,9 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-    DialogFooter
-} from "@/components/ui/dialog"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-
-  
-import { Input } from "@/components/ui/input"
+  } from "@/components/ui/dialog"
   
   
-
 
 export default function NavBar() {
     const supabase = createClientComponentClient();
@@ -93,20 +80,17 @@ export default function NavBar() {
                 <div className="flex items-center px-4">
                     <div className="flex-shrink-0">
                     <Dialog>
-                        <DialogTrigger asChild>
+                        <DialogTrigger>
                             <Button variant="outline">Create</Button>
                         </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px]">
-                            <Tabs defaultValue="project" className="w-[400px]">
-                                <TabsList>
-                                    <TabsTrigger value="project">Project</TabsTrigger>
-                                    <TabsTrigger value="chapter">Chapter</TabsTrigger>
-                                    <TabsTrigger value="task">Task</TabsTrigger>
-                                </TabsList>
-                                <TabsContent value="project">Add project here</TabsContent>
-                                <TabsContent value="chapter">Add chapter here</TabsContent>
-                                <TabsContent value="task">Add task here</TabsContent>
-                            </Tabs>
+                        <DialogContent>
+                            <DialogHeader>
+                            <DialogTitle>Are you sure absolutely sure?</DialogTitle>
+                            <DialogDescription>
+                                This action cannot be undone. This will permanently delete your account
+                                and remove your data from our servers.
+                            </DialogDescription>
+                            </DialogHeader>
                         </DialogContent>
                         </Dialog>
                     </div>
