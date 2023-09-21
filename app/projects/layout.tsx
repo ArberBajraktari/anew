@@ -22,15 +22,7 @@ export default async function ProjectLayout({
 
     return (
         <div>
-            {user ? (
-              <div>
-                {children}
-                </div>
-            ) : (
-              <div>
-                User is not logged
-              </div>
-            )}
+           {children}
         </div>
         
     )

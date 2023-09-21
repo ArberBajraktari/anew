@@ -7,7 +7,11 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { useEffect, useState } from "react"
 import { useQuery } from "react-query"
+import Project from "@/components/project"
+import ReactQueryProvider from "../providers/reactQuery"
+import ProjectSkeleton from "@/components/project_add_button"
 const supabase = createClientComponentClient();
+
 
 
 async function getProjects() {
@@ -36,16 +40,20 @@ export default function ProjectsContent() {
       if(isLoadingProjects){
         return (
             <div>
-                Projects are loading
+                <div className='grid grid-cols-3 gap-6 p-5 space-y-6'>
+                    <ProjectSkeleton />
+                    <ProjectSkeleton />
+                </div>
             </div>
         )
       }
       
       if (dataProjects && dataProjects.length > 0) {
         return (
-            <div className='h-full w-full flex space-x-8'>
+            <div className='grid grid-cols-3 gap-6 p-5 space-y-6'>
               {dataProjects.map((project) => (
-                  <div key={project.id}>{project.name}</div>
+                 // eslint-disable-next-line react/jsx-key
+                 <Project name={project.name} description={project.description} chapter_number={3} task_number={10} />
               ))}
             </div>
           

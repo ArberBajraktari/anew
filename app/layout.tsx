@@ -17,12 +17,29 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="h-full bg-gray-50">
-      <body className="h-full">
-        <Suspense>
+    <html lang="en" className="">
+      
+
+      <body className="flex flex-col h-screen w-screen bg-[#ECEBEB]">
+      <main className="grid grid-rows-10 grid-flow-row">
+        <div className="row-span-1 sticky top-0 z-10">
           <NavBar />
-        </Suspense>
-        {children}
+        </div>
+
+        <div className="row-span-9">
+          <div className="grid grid-cols-8 grid-flow-col">
+            <div className="col-span-6">
+              {children}
+            </div>
+            <div className="col-span-2 relative">
+              <div className="sticky min-h-[95vh] top-[5%] bg-[#E2E2E2]">
+                XXX
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
       </body>
     </html>
   )

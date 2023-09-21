@@ -49,7 +49,7 @@ export default function NavBar() {
     }, [supabase.auth]);
     
     return (
-        <div className="bg-gray-50/50 mx-auto w-full px-4 sm:px-6 lg:px-8">
+        <div className="bg-[#FDFDFD] mx-auto w-full px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 justify-between">
                 <div className="flex">
                     <div className="flex flex-shrink-0 items-center">
