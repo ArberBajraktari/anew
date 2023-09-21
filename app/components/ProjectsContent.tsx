@@ -19,7 +19,7 @@ async function getProjects() {
         data: { user },
     } = await supabase.auth.getUser()
     if(user){
-        const { data, error } = await supabase.from('projects').select().eq('user_id', user.id);
+        const { data, error } = await supabase.from('projects').select("*").eq('user_id', user.id);
 
         if (error) {
             console.error('Error fetching projects:', error.message);
@@ -52,14 +52,11 @@ export default function ProjectsContent() {
         return (
             <div className='grid grid-cols-3 gap-6 p-5 space-y-6'>
               {dataProjects.map((project) => (
-                 // eslint-disable-next-line react/jsx-key
-                 <Project name={project.name} description={project.description} chapter_number={3} task_number={10} />
+                 <Project name={project.name} description={project.description} task_number={10} project_id={project.id} key={project.id}/>
               ))}
             </div>
           
         );
-      } else {
-        return <div>No projects available.</div>;
       }
     
     return (
