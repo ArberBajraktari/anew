@@ -1,6 +1,7 @@
 'use client'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useEffect, useState } from 'react';
+import ReactQueryProvider from './providers/reactQuery';
 
 export default function Home() {
   const supabase = createClientComponentClient();
@@ -29,27 +30,25 @@ export default function Home() {
   if (isLoading) {
     // Display a loading indicator while fetching user data
     return (
-      <main className="flex flex-col items-center justify-between p-24">
-        <div>Loading...</div>
-      </main>
-    );
-  }
-
-  if (user == null) {
-    return (
-      <main className="flex flex-col items-center justify-between p-24">
         <div>
-          Not logged
+            <div className='grid grid-cols-3 gap-6 p-5 space-y-6'>
+              Loading...
+            </div>
         </div>
-      </main>
     );
   }
-
-  return (
-    <main className="flex flex-col items-center justify-between p-24">
+  if(user){
+    return (
       <div>
-        Content
+          <ReactQueryProvider>
+            
+          </ReactQueryProvider> 
       </div>
-    </main>
-  );
+    )
+  }
+  return (
+    <div>
+        You are not signed in.
+    </div>
+  )
 }

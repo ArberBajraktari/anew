@@ -6,14 +6,6 @@ import { redirect } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { useEffect, useState } from "react"
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-  } from "@/components/ui/dialog"
   
   
 
@@ -79,20 +71,7 @@ export default function NavBar() {
                 </div>
                 <div className="flex items-center px-4">
                     <div className="flex-shrink-0">
-                    <Dialog>
-                        <DialogTrigger>
-                            <Button variant="outline">Create</Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                            <DialogTitle>Are you sure absolutely sure?</DialogTitle>
-                            <DialogDescription>
-                                This action cannot be undone. This will permanently delete your account
-                                and remove your data from our servers.
-                            </DialogDescription>
-                            </DialogHeader>
-                        </DialogContent>
-                        </Dialog>
+                        <Button variant="outline">Create</Button>
                     </div>
                 </div>
                 <div className="flex items-center px-4">

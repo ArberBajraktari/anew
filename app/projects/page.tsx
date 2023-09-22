@@ -6,8 +6,9 @@ import { useEffect, useState } from 'react';
 import ProjectsContent from '../components/ProjectsContent';
 import ReactQueryProvider from '../providers/reactQuery';
 
+
 export default function Projects() {
-    const supabase = createClientComponentClient();
+  const supabase = createClientComponentClient();
   const [user, setUser] = useState<null | {}>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -35,18 +36,29 @@ export default function Projects() {
     return (
         <div>
             <div className='grid grid-cols-3 gap-6 p-5 space-y-6'>
-                <ProjectSkeleton />
-                <ProjectSkeleton />
+              <ProjectSkeleton />
+              <ProjectSkeleton />
+              <ProjectSkeleton />
+              <ProjectSkeleton />
+              <ProjectSkeleton />
+              <ProjectSkeleton />
             </div>
         </div>
     );
   }
 
+  if(user){
+    return (
+      <div>
+          <ReactQueryProvider>
+              <ProjectsContent />
+          </ReactQueryProvider> 
+      </div>
+    )
+  }
   return (
     <div>
-        <ReactQueryProvider>
-            <ProjectsContent />
-        </ReactQueryProvider> 
+        You are not signed in.
     </div>
   )
 }

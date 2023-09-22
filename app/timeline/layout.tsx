@@ -7,26 +7,10 @@ export default async function TimelineLayout({
 }: {
   children: React.ReactNode
 }) {
-    const supabase = createServerComponentClient({ cookies })
-
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
-    if (!user){
-        redirect('/')
-    }
 
     return (
         <div>
-            {user ? (
-              <div>
-                {children}
-                </div>
-            ) : (
-              <div>
-                User is not logged
-              </div>
-            )}
+          {children}
         </div>
         
     )

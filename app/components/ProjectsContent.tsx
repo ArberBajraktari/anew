@@ -43,7 +43,20 @@ export default function ProjectsContent() {
                 <div className='grid grid-cols-3 gap-6 p-5 space-y-6'>
                     <ProjectSkeleton />
                     <ProjectSkeleton />
+                    <ProjectSkeleton />
+                    <ProjectSkeleton />
+                    <ProjectSkeleton />
+                    <ProjectSkeleton />
                 </div>
+            </div>
+        )
+      }
+      if (errorProjects) {
+        console.error('Error fetching projects:', errorProjects);
+        return (
+            <div>
+                There was an error fetching projects!
+                Please try again later.
             </div>
         )
       }
