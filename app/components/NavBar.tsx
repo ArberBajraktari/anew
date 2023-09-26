@@ -6,6 +6,8 @@ import { redirect } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { useEffect, useState } from "react"
+import Create from "@/components/create"
+import { WizardProvider } from '../../wizardContext';
   
   
 
@@ -71,7 +73,9 @@ export default function NavBar() {
                 </div>
                 <div className="flex items-center px-4">
                     <div className="flex-shrink-0">
-                        <Button variant="outline">Create</Button>
+                        <WizardProvider>
+                            <Create />
+                        </WizardProvider>
                     </div>
                 </div>
                 <div className="flex items-center px-4">
