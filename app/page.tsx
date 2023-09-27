@@ -1,6 +1,7 @@
 'use client'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useEffect, useState } from 'react';
+import DailyContent from './components/DailyContent';
 import ReactQueryProvider from './providers/reactQuery';
 
 export default function Home() {
@@ -40,9 +41,7 @@ export default function Home() {
   if(user){
     return (
       <div>
-          <ReactQueryProvider>
-            
-          </ReactQueryProvider> 
+          <DailyContent />
       </div>
     )
   }

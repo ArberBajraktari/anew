@@ -50,9 +50,7 @@ export default function Projects() {
   if(user){
     return (
       <div>
-          <ReactQueryProvider>
               <ProjectsContent />
-          </ReactQueryProvider> 
       </div>
     )
   }

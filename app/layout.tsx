@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Suspense } from 'react';
 import NavBar from './components/NavBar';
+import ReactQueryProvider from './providers/reactQuery';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,9 +22,12 @@ export default function RootLayout({
       
 
       <body className="flex flex-col h-screen w-screen bg-[#ECEBEB]">
+      <ReactQueryProvider>
       <main className="grid grid-rows-10 grid-flow-row">
         <div className="row-span-1 sticky top-0 z-10">
-          <NavBar />
+          
+            <NavBar />
+          
         </div>
 
         <div className="row-span-9">
@@ -40,6 +44,7 @@ export default function RootLayout({
         </div>
 
       </main>
+      </ReactQueryProvider>
       </body>
     </html>
   )

@@ -8,6 +8,7 @@ import { cookies } from 'next/headers'
 import { useEffect, useState } from "react"
 import Create from "@/components/create"
 import { WizardProvider } from '../../wizardContext';
+import ReactQueryProvider from "../providers/reactQuery"
   
   
 
@@ -74,7 +75,7 @@ export default function NavBar() {
                 <div className="flex items-center px-4">
                     <div className="flex-shrink-0">
                         <WizardProvider>
-                            <Create />
+                            <Create user={user}/>
                         </WizardProvider>
                     </div>
                 </div>

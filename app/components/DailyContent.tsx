@@ -14,12 +14,12 @@ const supabase = createClientComponentClient();
 
 
 
-async function getProjects() {
+async function getTasks() {
     const {
         data: { user },
     } = await supabase.auth.getUser()
     if(user){
-        const { data, error } = await supabase.from('projects').select("*").eq('user_id', user.id);
+        const { data, error } = await supabase.from('tasks').select("*").eq('user_id', user.id);
 
         if (error) {
             console.error('Error fetching projects:', error.message);
@@ -30,12 +30,12 @@ async function getProjects() {
     }
 }
 
-export default function ProjectsContent() {
+export default function DailyContent() {
     const {
         isLoading: isLoadingProjects,
         error: errorProjects,
         data: dataProjects
-      } = useQuery("projects", getProjects);
+      } = useQuery("tasks", getTasks);
 
       if(isLoadingProjects){
         return (
@@ -63,12 +63,12 @@ export default function ProjectsContent() {
       
       if (dataProjects && dataProjects.length > 0) {
         return (
-            <div className='grid grid-cols-3 gap-6 p-5 space-y-6'>
-              {dataProjects.map((project) => (
-                 <Project name={project.name} description={project.description} task_number={10} project_id={project.id} key={project.id}/>
+            <div className="m-4">
+                {dataProjects.map((project) => (
+                 // eslint-disable-next-line react/jsx-key
+                 <h1>- {project.name}-{project.priority}</h1>
               ))}
-            </div>
-          
+            </div>          
         );
       }
     
