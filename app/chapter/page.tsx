@@ -3,7 +3,7 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useEffect, useState } from 'react';
 import ReactQueryProvider from '../providers/reactQuery';
 
-export default function Backlog() {
+export default function Chapter() {
   const supabase = createClientComponentClient();
   const [user, setUser] = useState<null | {}>(null);
   const [isLoading, setIsLoading] = useState(true);

@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google'
 import { Suspense } from 'react';
 import NavBar from './components/NavBar';
 import ReactQueryProvider from './providers/reactQuery';
+import Platform from '@/components/platform';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -37,7 +38,7 @@ export default function RootLayout({
             </div>
             <div className="col-span-2 relative">
               <div className="sticky min-h-[95vh] top-[5%] bg-[#CFE3F6]">
-                XXX
+                <Platform />
               </div>
             </div>
           </div>
