@@ -11,17 +11,34 @@ export const WizardProvider = ({ children }) => {
   const [currentStep, setCurrentStep] = useState("home");
   const [formData, setFormData] = useState({});
 
-  const chapter_critertia = () => {
-    setCurrentStep("chapter_criteria");
+  const select_chapter = () => {
+    setCurrentStep("select_chapter");
+  };
+
+  const select_project = () => {
+    setCurrentStep("select_project");
+  };
+
+  const select_order = () => {
+    setCurrentStep("select_order");
   };
 
   const go_home = () => {
     setCurrentStep("home");
   };
 
-  const previousStep = () => {
-    setCurrentStep(currentStep - 1);
+  const go_home_chapter = () => {
+    setCurrentStep("home_chapter");
   };
+
+  const go_home_project = () => {
+    setCurrentStep("home_project");
+  };
+
+  const go_ac_project = () => {
+    setCurrentStep("ac_project");
+  };
+
 
   const resetWizard = () => {
     setCurrentStep(1);
@@ -34,10 +51,14 @@ export const WizardProvider = ({ children }) => {
         currentStep,
         formData,
         setFormData,
-        chapter_critertia,
-        previousStep,
+        select_chapter,
+        select_project,
         resetWizard,
-        go_home
+        go_home,
+        go_home_project,
+        go_ac_project,
+        select_order,
+        go_home_chapter
       }}
     >
       {children}

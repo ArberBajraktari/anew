@@ -10,16 +10,20 @@ import { useQuery, useQueryClient } from "react-query"
 import Project from "@/components/project"
 import ReactQueryProvider from "../providers/reactQuery"
 import ProjectSkeleton from "@/components/project_add_button"
+import Task from "@/components/Task"
 const supabase = createClientComponentClient();
-
+const currentDate = new Date();
+const formattedDate = currentDate.toISOString().slice(0, 10);
 
 
 async function getTasks() {
+    
+    console.log(formattedDate)
     const {
         data: { user },
     } = await supabase.auth.getUser()
     if(user){
-        const { data, error } = await supabase.from('tasks').select("*").eq('user_id', user.id);
+        const { data, error } = await supabase.from('tasks').select("*").eq('user_id', user.id).eq('deadline', formattedDate);
 
         if (error) {
             console.error('Error fetching projects:', error.message);
@@ -63,10 +67,16 @@ export default function DailyContent() {
       
       if (dataProjects && dataProjects.length > 0) {
         return (
-            <div className="m-4">
+            <div className="m-10">
+                <div className="flex justify-center items-center">
+                    <div className="w-3/4">
+                        <h1 className="min-h-10 text-2xl mt-4 mb-4 text-[#6DA9E4]">Today: {formattedDate}</h1>
+                    </div>
+                </div>
+                
                 {dataProjects.map((project) => (
-                 // eslint-disable-next-line react/jsx-key
-                 <h1>- {project.name}-{project.priority}</h1>
+                 <Task key={project.id} name={project.name} description={project.description} task_number={project.task_number} project_id={project.project_id} chapter_id={0} status={false} follow_up={""} priority={0} />
+                
               ))}
             </div>          
         );

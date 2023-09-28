@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang="en" className="">
       
 
-      <body className="flex flex-col h-screen w-screen bg-[#ECEBEB]">
+      <body className="flex flex-col h-screen w-screen bg-[#F3F3F3]">
       <ReactQueryProvider>
       <main className="grid grid-rows-10 grid-flow-row">
         <div className="row-span-1 sticky top-0 z-10">
@@ -36,7 +36,7 @@ export default function RootLayout({
               {children}
             </div>
             <div className="col-span-2 relative">
-              <div className="sticky min-h-[95vh] top-[5%] bg-[#E2E2E2]">
+              <div className="sticky min-h-[95vh] top-[5%] bg-[#CFE3F6]">
                 XXX
               </div>
             </div>

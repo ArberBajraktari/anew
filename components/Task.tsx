@@ -9,14 +9,14 @@ import { useQuery } from "react-query";
 const supabase = createClientComponentClient();
 
 interface TaskProps {
-    created_at: Date;
+    created_at?: Date;
     name: string;
     description: string;
     task_number: number;
     chapter_id: number;
     project_id: number;
     status: boolean;
-    follow_up: string;
+    follow_up?: string;
     priority: number;
   }
 
@@ -62,38 +62,18 @@ export default function Task({ name, description, task_number, project_id}: Task
 
     if (dataChapters ) {
         return (
-            <div className={`w-72 h-64 rounded-lg bg-[#D8DDE8] p-3 mt-5 mb-5  ${isHovered ? 'shadow-lg' : ''}`}
+            <div className="flex justify-center items-center">
+                <button className={`w-3/4 h-10 rounded-lg p-3 mt-1 mb-2 bg-white ${isHovered ? "border-sky-400 border" : ""}`}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}>
-                    <h1 className="min-h-10 text-2xl mb-4">{name}</h1>
-                    <div className="justify-center items-center flex" >
-                        <div className="bg-[#E9E9E9] p-3 rounded-lg shadow-lg  w-full">
-                            <div className="text-xs flex">
-                                <div className="flex-1 my-auto">{dataChapters.length} Chapters</div>
-                                <div className="flex-1 text-right">
-                                    <Image
-                                        src={x}
-                                        alt="Picture of the author"
-                                        width={40}
-                                        height={40}
-                                        className="float-right"
-                                        // blurDataURL="data:..." automatically provided
-                                        // placeholder="blur" // Optional blur-up while loading
-                                        />
-                                </div>
-                            </div>                  
-                            
-                        </div>
+                    <div className="grid grid-cols-8 gap-4 my-auto">
+                        <div className="col-span-1">01</div>
+                        <div className="col-span-5">05</div>
+                        <div className="col-span-1">01</div>
+                        <div className="col-span-1">01</div>
                     </div>
-                    <div className="mt-10 text-xs min-h-[32px]">
-                        {description}
-                    </div>
-                    <Separator className="border-t-2 border-[#838383] my-4"/>
-                    <div className="text-xs flex">
-                        <div className="flex-1">{task_number} Tasks</div>
-                        <div className="flex-1 text-right">Right Div</div>
-                    </div>
-                </div>
+                </button>
+            </div>
         )
     }
 

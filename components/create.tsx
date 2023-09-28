@@ -9,11 +9,7 @@ import {
     DialogTitle,
     DialogTrigger,
   } from "@/components/ui/dialog"
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-  } from "@/components/ui/popover"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
     Select,
     SelectContent,
@@ -29,15 +25,10 @@ import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "./ui/input";
-import { Calendar } from "./ui/calendar"
-import { CalendarIcon } from "lucide-react"
-import { format } from "date-fns"
-import { cn } from "@/lib/utils"
 const values = [1, 2, 3, 4, 5];
 import { useWizardContext } from '../wizardContext.js';
 import { createClient } from '@supabase/supabase-js'
-import { useQueryClient } from "react-query"
-import { AnyMxRecord } from "dns"
+import { useQuery, useQueryClient } from "react-query"
 
 const Priority = ({ values, selectedValue, onSelect }: {values: any, selectedValue: any, onSelect: any}) => {
     const [selectedButton, setSelectedButton] = useState(null);
@@ -69,14 +60,29 @@ const Priority = ({ values, selectedValue, onSelect }: {values: any, selectedVal
 export default function Create({user}:{user: any}) {
     const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!  , process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
     const queryClient = useQueryClient();
-    const { currentStep, chapter_critertia, previousStep, resetWizard, go_home } = useWizardContext();
+    const { currentStep, select_chapter, select_project, go_home_chapter, resetWizard, go_home, select_order, go_ac_project, go_home_project } = useWizardContext();
     const [priority, setPriority] = useState(null);
     const [projectName, setProjectName] = useState(''); // State to store the project name
     const [chapterSelected, setChapterSelected] = useState('No chapter selected'); // State to store the project name
+    const [projectSelected, setProjectSelected] = useState('No project selected'); // State to store the project name
+    const [projectSelectedTemp, setProjectSelectedTemp] = useState('No project selected'); // State to store the project name
     const [taskName, setTaskName] = useState(''); // State to store the project name
     const [taskDesc, setTaskDesc] = useState(''); // State to store the project name
     const [projectDesc, setProjectDesc] = useState(''); // State to store the project name
     const [date, setDate] = React.useState<Date>()
+
+    const {
+        isLoading: isLoadingProjects,
+        error: errorProjects,
+        data: dataProjects,
+      } = useQuery("projects", async () => {
+        // Your data fetching logic goes here, e.g., fetch data from Supabase
+        const { data, error } = await supabase.from('projects').select("*").eq('user_id', user.id);
+        if (error) {
+          throw new Error(error.message);
+        }
+        return data;
+      });
 
     const handleNameChange = (e: any) => {
         setProjectName(e.target.value);
@@ -99,13 +105,21 @@ export default function Create({user}:{user: any}) {
         setTaskDesc(e.target.value);
     };
 
-    const handleChaptersChange = (e: any) => {
-        setChapterSelected(e.target.value);
+    const handleProjectSelection = (e: any) => {
+        setProjectSelectedTemp(e);
     };
 
     const assign_chapter = () => {
         setChapterSelected("Running")
         go_home()
+    };
+
+    const assign_project = () => {
+        if(projectSelectedTemp !== "No project selected"){
+            setProjectSelected(projectSelectedTemp)
+            setProjectSelectedTemp("No project selected")
+        }
+        go_home_chapter()
     };
 
 
@@ -162,99 +176,320 @@ export default function Create({user}:{user: any}) {
         case "home":
             return (
                 <div>
-            <Dialog>
-                <DialogTrigger asChild>
-                    <Button variant="outline">Create</Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                        <DialogTitle>Create</DialogTitle>
-                        <DialogDescription>
-                            Create a task, chapter or project!
-                        </DialogDescription>
-                        <Tabs defaultValue="task" className="w-full">
-                            <TabsList className="w-full">
-                                <TabsTrigger value="task">Task</TabsTrigger>
-                                <TabsTrigger value="chapter">Chapter</TabsTrigger>
-                                <TabsTrigger value="project">Project</TabsTrigger>
-                            </TabsList>
-                            <TabsContent value="task">
-                                <Label className="wt-4">Chapter</Label>
-                                <Button variant="outline"
-                                    className={`wt-4 w-full h-20 ${chapterSelected !== 'No chapter selected' ? 'bg-gray-100 border-green-400' : ''}`}
-                                    onClick={chapter_critertia}>{chapterSelected}</Button>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button variant="outline">Create</Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                                <DialogTitle>Create</DialogTitle>
+                                <DialogDescription>
+                                    Create a task, chapter or project!
+                                </DialogDescription>
+                                <Tabs defaultValue="task" className="w-full">
+                                    <TabsList className="w-full">
+                                        <TabsTrigger value="task">Task</TabsTrigger>
+                                        <TabsTrigger value="chapter">Chapter</TabsTrigger>
+                                        <TabsTrigger value="project">Project</TabsTrigger>
+                                    </TabsList>
+                                    <TabsContent value="task">
+                                        <Label className="wt-4">Chapter</Label>
+                                        <Button variant="outline"
+                                            className={`wt-4 w-full h-20 ${chapterSelected !== 'No chapter selected' ? 'bg-gray-100 border-green-400' : ''}`}
+                                            onClick={select_chapter}>{chapterSelected}</Button>
 
-                                <Label className="wt-4">Name</Label>
-                                <Input 
-                                    id="name" 
-                                    placeholder="Name of your task" 
-                                    value={taskName}
-                                    onChange={handleTaskChange}/>
+                                        <Label className="wt-4">Name</Label>
+                                        <Input 
+                                            id="name" 
+                                            placeholder="Name of your task" 
+                                            value={taskName}
+                                            onChange={handleTaskChange}/>
 
-                                <Label className="wt-4">Description</Label>
-                                <Textarea 
-                                value={taskDesc}
-                                onChange={handleTaskDescChange}/>
-                                
-                                <Label className="wt-8">Priority</Label>
-                                <Priority
-                                    values={values}
-                                    selectedValue={priority}
-                                    onSelect={handleValueChange}
-                                />
+                                        <Label className="wt-4">Description</Label>
+                                        <Textarea 
+                                        value={taskDesc}
+                                        onChange={handleTaskDescChange}/>
+                                        
+                                        <Label className="wt-8">Priority</Label>
+                                        <Priority
+                                            values={values}
+                                            selectedValue={priority}
+                                            onSelect={handleValueChange}
+                                        />
 
-                                <Label className="wt-4">Deadline</Label>
-                                <Input id="name" placeholder="Name of your task" />
+                                        <Label className="wt-4">Deadline</Label>
+                                        <Input id="name" placeholder="Name of your task" />
 
-                                <Button className="wt-4" type="submit" onClick={() => create_item()}>Create</Button>
-                            </TabsContent>
-                            <TabsContent value="chapter">
-                                <Label className="wt-4">Project</Label>
-                                <Button variant="outline" className="wt-4 w-full h-20">No project selected</Button>
+                                        <Button className="wt-4" type="submit" onClick={() => create_item()}>Create</Button>
+                                    </TabsContent>
+                                    <TabsContent value="chapter">
+                                        <Label className="wt-4">Project</Label>
+                                        <Button variant="outline"
+                                        className={`wt-4 w-full h-20 ${projectSelected !== 'No project selected' ? 'bg-gray-100 border-green-400' : ''}`}
+                                        onClick={select_project}>{projectSelected}</Button>
 
-                                <Label className="wt-4">Name</Label>
-                                <Input id="name" placeholder="Name of your chapter" />
+                                        <Label className="wt-4">Name</Label>
+                                        <Input id="name" placeholder="Name of your chapter" />
 
-                                <Label className="wt-4">Description</Label>
-                                <Textarea />
+                                        <Label className="wt-4">Description</Label>
+                                        <Textarea />
 
-                                <Label className="wt-4">Acceptance criteria</Label>
-                                <Button variant="outline" className="wt-4 w-full h-20 bg-red-50 hover:bg-red-50/50">
-                                    No acceptance criteria defined
-                                </Button>
+                                        <Label className="wt-4">Acceptance criteria</Label>
+                                        <Button variant="outline" className="wt-4 w-full h-20 bg-red-50 hover:bg-red-50/50">
+                                            No acceptance criteria defined
+                                        </Button>
 
-                                <Button className="wt-4" type="submit" onClick={() => create_chapter()}>Create</Button>
-                            </TabsContent>
-                            <TabsContent value="project">
-                                <Label className="wt-4">Name</Label>
-                                <Input 
-                                    id="name" 
-                                    placeholder="Name of your project" 
-                                    value={projectName}
-                                    onChange={handleNameChange}/>
+                                        <Label className="wt-4">Chapter order</Label>
+                                        <Button variant="outline" className="wt-4 w-full h-20 bg-blue-50 hover:bg-blue-50/50"
+                                            onClick={select_order}>
+                                            Chapter order
+                                        </Button>
 
-                                <Label className="wt-4">Description</Label>
-                                <Textarea 
-                                    id="description"
-                                    placeholder="Description of your project"
-                                    value={projectDesc}
-                                    onChange={handleDescriptionChange}
-                                />
+                                        <Button className="wt-4" type="submit" onClick={() => create_chapter()}>Create</Button>
+                                    </TabsContent>
+                                    <TabsContent value="project">
+                                        <Label className="wt-4">Name</Label>
+                                        <Input 
+                                            id="name" 
+                                            placeholder="Name of your project" 
+                                            value={projectName}
+                                            onChange={handleNameChange}/>
 
-                                <Label className="wt-4">Acceptance criteria</Label>
-                                <Button variant="outline" className="wt-4 w-full h-20 bg-red-50 hover:bg-red-50/50">
-                                    No acceptance criteria defined
-                                </Button>
+                                        <Label className="wt-4">Description</Label>
+                                        <Textarea 
+                                            id="description"
+                                            placeholder="Description of your project"
+                                            value={projectDesc}
+                                            onChange={handleDescriptionChange}
+                                        />
 
-                                <Button className="wt-4" type="submit" onClick={() => create_project()}>Create</Button>
-                            </TabsContent>
-                        </Tabs>
-                    </DialogHeader>
-                </DialogContent>
-            </Dialog>
-        </div>
+                                        <Label className="wt-4">Acceptance criteria</Label>
+                                        <Button 
+                                            variant="outline" 
+                                            className="wt-4 w-full h-20 bg-red-50 hover:bg-red-50/50"
+                                            onClick={go_ac_project}>
+                                            No acceptance criteria defined
+                                        </Button>
+
+                                        <Button className="wt-4" type="submit" onClick={() => create_project()}>Create</Button>
+                                    </TabsContent>
+                                </Tabs>
+                            </DialogHeader>
+                        </DialogContent>
+                    </Dialog>
+                </div>
             );
-        case "chapter_criteria":
+        case "home_chapter":
+                return (
+                    <div>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button variant="outline">Create</Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                            <DialogTitle>Create</DialogTitle>
+                            <DialogDescription>
+                                Create a task, chapter or project!
+                            </DialogDescription>
+                            <Tabs defaultValue="chapter" className="w-full">
+                                <TabsList className="w-full">
+                                    <TabsTrigger value="task">Task</TabsTrigger>
+                                    <TabsTrigger value="chapter">Chapter</TabsTrigger>
+                                    <TabsTrigger value="project">Project</TabsTrigger>
+                                </TabsList>
+                                <TabsContent value="task">
+                                    <Label className="wt-4">Chapter</Label>
+                                    <Button variant="outline"
+                                        className={`wt-4 w-full h-20 ${chapterSelected !== 'No chapter selected' ? 'bg-gray-100 border-green-400' : ''}`}
+                                        onClick={select_chapter}>{chapterSelected}</Button>
+    
+                                    <Label className="wt-4">Name</Label>
+                                    <Input 
+                                        id="name" 
+                                        placeholder="Name of your task" 
+                                        value={taskName}
+                                        onChange={handleTaskChange}/>
+    
+                                    <Label className="wt-4">Description</Label>
+                                    <Textarea 
+                                    value={taskDesc}
+                                    onChange={handleTaskDescChange}/>
+                                    
+                                    <Label className="wt-8">Priority</Label>
+                                    <Priority
+                                        values={values}
+                                        selectedValue={priority}
+                                        onSelect={handleValueChange}
+                                    />
+    
+                                    <Label className="wt-4">Deadline</Label>
+                                    <Input id="name" placeholder="Name of your task" />
+    
+                                    <Button className="wt-4" type="submit" onClick={() => create_item()}>Create</Button>
+                                </TabsContent>
+                                <TabsContent value="chapter">
+                                    <Label className="wt-4">Project</Label>
+                                    <Button variant="outline" 
+                                    className={`wt-4 w-full h-20 ${projectSelected !== 'No project selected' ? 'bg-gray-100 border-green-400' : ''}`}
+                                    onClick={select_project}>{projectSelected}</Button>
+                                    
+    
+                                    <Label className="wt-4">Name</Label>
+                                    <Input id="name" placeholder="Name of your chapter" />
+    
+                                    <Label className="wt-4">Description</Label>
+                                    <Textarea />
+    
+                                    <Label className="wt-4">Acceptance criteria</Label>
+                                    <Button variant="outline" className="wt-4 w-full h-20 bg-red-50 hover:bg-red-50/50">
+                                        No acceptance criteria defined
+                                    </Button>
+
+                                    <Label className="wt-4">Acceptance criteria</Label>
+                                    <Button variant="outline" className="wt-4 w-full h-20 bg-blue-50 hover:bg-blue-50/50"
+                                        onClick={select_order}>
+                                        Chapter order
+                                    </Button>
+    
+                                    <Button className="wt-4" type="submit" onClick={() => create_chapter()}>Create</Button>
+                                </TabsContent>
+                                <TabsContent value="project">
+                                    <Label className="wt-4">Name</Label>
+                                    <Input 
+                                        id="name" 
+                                        placeholder="Name of your project" 
+                                        value={projectName}
+                                        onChange={handleNameChange}/>
+    
+                                    <Label className="wt-4">Description</Label>
+                                    <Textarea 
+                                        id="description"
+                                        placeholder="Description of your project"
+                                        value={projectDesc}
+                                        onChange={handleDescriptionChange}
+                                    />
+    
+                                    <Label className="wt-4">Acceptance criteria</Label>
+                                    <Button variant="outline" className="wt-4 w-full h-20 bg-red-50 hover:bg-red-50/50"
+                                    onClick={go_ac_project}>
+                                        No acceptance criteria defined
+                                    </Button>
+    
+                                    <Button className="wt-4" type="submit" onClick={() => create_project()}>Create</Button>
+                                </TabsContent>
+                            </Tabs>
+                        </DialogHeader>
+                    </DialogContent>
+                </Dialog>
+            </div>
+                );
+                case "home_project":
+                    return (
+                        <div>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button variant="outline">Create</Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                                <DialogTitle>Create</DialogTitle>
+                                <DialogDescription>
+                                    Create a task, chapter or project!
+                                </DialogDescription>
+                                <Tabs defaultValue="project" className="w-full">
+                                    <TabsList className="w-full">
+                                        <TabsTrigger value="task">Task</TabsTrigger>
+                                        <TabsTrigger value="chapter">Chapter</TabsTrigger>
+                                        <TabsTrigger value="project">Project</TabsTrigger>
+                                    </TabsList>
+                                    <TabsContent value="task">
+                                        <Label className="wt-4">Chapter</Label>
+                                        <Button variant="outline"
+                                            className={`wt-4 w-full h-20 ${chapterSelected !== 'No chapter selected' ? 'bg-gray-100 border-green-400' : ''}`}
+                                            onClick={select_chapter}>{chapterSelected}</Button>
+        
+                                        <Label className="wt-4">Name</Label>
+                                        <Input 
+                                            id="name" 
+                                            placeholder="Name of your task" 
+                                            value={taskName}
+                                            onChange={handleTaskChange}/>
+        
+                                        <Label className="wt-4">Description</Label>
+                                        <Textarea 
+                                        value={taskDesc}
+                                        onChange={handleTaskDescChange}/>
+                                        
+                                        <Label className="wt-8">Priority</Label>
+                                        <Priority
+                                            values={values}
+                                            selectedValue={priority}
+                                            onSelect={handleValueChange}
+                                        />
+        
+                                        <Label className="wt-4">Deadline</Label>
+                                        <Input id="name" placeholder="Name of your task" />
+        
+                                        <Button className="wt-4" type="submit" onClick={() => create_item()}>Create</Button>
+                                    </TabsContent>
+                                    <TabsContent value="chapter">
+                                        <Label className="wt-4">Project</Label>
+                                        <Button variant="outline" 
+                                        className={`wt-4 w-full h-20 ${projectSelected !== 'No project selected' ? 'bg-gray-100 border-green-400' : ''}`}
+                                        onClick={select_project}>{projectSelected}</Button>
+                                        
+        
+                                        <Label className="wt-4">Name</Label>
+                                        <Input id="name" placeholder="Name of your chapter" />
+        
+                                        <Label className="wt-4">Description</Label>
+                                        <Textarea />
+        
+                                        <Label className="wt-4">Acceptance criteria</Label>
+                                        <Button variant="outline" className="wt-4 w-full h-20 bg-red-50 hover:bg-red-50/50">
+                                            No acceptance criteria defined
+                                        </Button>
+    
+                                        <Label className="wt-4">Acceptance criteria</Label>
+                                        <Button variant="outline" className="wt-4 w-full h-20 bg-blue-50 hover:bg-blue-50/50"
+                                            onClick={select_order}>
+                                            Chapter order
+                                        </Button>
+        
+                                        <Button className="wt-4" type="submit" onClick={() => create_chapter()}>Create</Button>
+                                    </TabsContent>
+                                    <TabsContent value="project">
+                                        <Label className="wt-4">Name</Label>
+                                        <Input 
+                                            id="name" 
+                                            placeholder="Name of your project" 
+                                            value={projectName}
+                                            onChange={handleNameChange}/>
+        
+                                        <Label className="wt-4">Description</Label>
+                                        <Textarea 
+                                            id="description"
+                                            placeholder="Description of your project"
+                                            value={projectDesc}
+                                            onChange={handleDescriptionChange}
+                                        />
+        
+                                        <Label className="wt-4">Acceptance criteria</Label>
+                                        <Button variant="outline" className="wt-4 w-full h-20 bg-red-50 hover:bg-red-50/50"
+                                        onClick={go_ac_project}>
+                                            No acceptance criteria defined
+                                        </Button>
+        
+                                        <Button className="wt-4" type="submit" onClick={() => create_project()}>Create</Button>
+                                    </TabsContent>
+                                </Tabs>
+                            </DialogHeader>
+                        </DialogContent>
+                    </Dialog>
+                </div>
+                    );
+        case "select_chapter":
             return (
                 <div>
                     <Dialog>
@@ -265,7 +500,7 @@ export default function Create({user}:{user: any}) {
                             <DialogHeader>
                                 <DialogTitle>Choose chapter</DialogTitle>
                                 <DialogDescription>
-                                    Choose in which chapter this task belongs.
+                                    Choose in which chapter this task belongs. f
                                 </DialogDescription>
                                     <Label className="wt-4">Project</Label>
                                     <Select>
@@ -298,14 +533,147 @@ export default function Create({user}:{user: any}) {
                     </Dialog>
                 </div>
             );
+        case "select_project":
+                if (isLoadingProjects){
+                    return (
+                        <div>
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button variant="outline">Create</Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[425px]">
+                                    <DialogHeader>
+                                        <DialogTitle>Choose chapter</DialogTitle>
+                                        <DialogDescription>
+                                            Choose in which chapter this task belongs.
+                                        </DialogDescription>
+                                            <Label className="wt-4">Project</Label>
+                                            Loading...
+                                    </DialogHeader>
+                                    <DialogFooter>
+                                    <Button type="submit" onClick={go_home_chapter}>Back</Button>
+                                    <Button type="submit" onClick={assign_project}>Assign</Button>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
+                        </div>
+                    );
+                }
+
+                if (errorProjects){
+                    return (
+                        <div>
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button variant="outline">Create</Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[425px]">
+                                    Error 
+                                </DialogContent>
+                            </Dialog>
+                        </div>
+                    );
+                }
+
+                return (
+                    <div>
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button variant="outline">Create</Button>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-[425px]">
+                                <DialogHeader>
+                                    <DialogTitle>Choose chapter</DialogTitle>
+                                    <DialogDescription>
+                                        Choose in which chapter this task belongs.
+                                    </DialogDescription>
+                                        <Label className="wt-4">Project</Label>
+                                        <Select onValueChange={(event:any) => handleProjectSelection(event)}>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder={projectSelected}  />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                {dataProjects ? (
+                                                    dataProjects.map((project) => (
+                                                        <SelectItem value={project.name} key={project.id}>{project.name}</SelectItem>
+                                                    ))) : (
+                                                        // Render something else when dataProjects is null or undefined
+                                                        <div>No projects available</div>
+                                                    )}
+                                                </SelectContent>
+                                            </Select>
+                                </DialogHeader>
+                                <DialogFooter>
+                                <Button type="submit" onClick={go_home_chapter}>Back</Button>
+                                <Button type="submit" onClick={assign_project}>Assign</Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
+                    </div>
+                );
+        case "select_order":
+            return (
+                <div>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button variant="outline">Create</Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                                <DialogTitle>Choose order</DialogTitle>
+                                <DialogDescription>
+                                    Choose in which order the new chapter should be.
+                                </DialogDescription>
+                                    <Label className="wt-4">Project</Label>
+                            </DialogHeader>
+                            <DialogFooter>
+                            <Button type="submit" onClick={go_home_chapter}>Back</Button>
+                            <Button type="submit" onClick={go_home_chapter}>Assign</Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                </div>
+            );
+        case "ac_project":
+            return (
+                <div>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button variant="outline">Create</Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                                <DialogTitle>Acceptance criteria</DialogTitle>
+                                <DialogDescription>
+                                    Please insert the acceptance criteria for this project.
+                                </DialogDescription>
+                                    <Label className="wt-4 wb-4">To be accomplished:</Label>
+                                    <Checkbox disabled /> Insert your criteria.
+                                    <div className="w-full h-4">
+                                        <button>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    
+
+                            </DialogHeader>
+                            <DialogFooter>
+                            <Button type="submit" onClick={go_home_project}>Back</Button>
+                            <Button type="submit" onClick={go_home_project}>Assign</Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                </div>
+            );
+
         // Add cases for additional steps
         default:
             return null;
         }
     };
-
-
-    
+    go_home_project
     return (
         <div>
             {renderStep()}

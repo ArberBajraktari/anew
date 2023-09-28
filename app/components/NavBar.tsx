@@ -31,7 +31,7 @@ export default function NavBar() {
     }, [supabase.auth]);
     
     return (
-        <div className="bg-[#FDFDFD] mx-auto w-full px-4 sm:px-6 lg:px-8">
+        <div className="bg-[#6DA9E4] text-white mx-auto w-full px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 justify-between">
                 <div className="flex">
                     <div className="flex flex-shrink-0 items-center">
@@ -73,7 +73,7 @@ export default function NavBar() {
                     </div>
                 </div>
                 <div className="flex items-center px-4">
-                    <div className="flex-shrink-0">
+                    <div className="flex-shrink-0 text-black">
                         <WizardProvider>
                             <Create user={user}/>
                         </WizardProvider>
