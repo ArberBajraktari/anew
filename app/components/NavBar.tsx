@@ -75,7 +75,7 @@ export default function NavBar() {
                 <div className="flex items-center px-4">
                     <div className="flex-shrink-0 text-black">
                         <WizardProvider>
-                            <Create user={user}/>
+                            {/* <Create user={user}/> */}
                         </WizardProvider>
                     </div>
                 </div>

@@ -82,8 +82,15 @@ export default function DailyContent() {
         );
       }
     
-    return (
-        <div>
-        </div>
-    )
+      return (
+        <div className="m-10">
+            <div className="flex justify-center items-center">
+                <div className="w-3/4">
+                    <h1 className="min-h-10 text-2xl mt-4 mb-4 text-[#6DA9E4]">Today: {formattedDate}</h1>
+                </div>
+            </div>
+                No tasks
+        </div>          
+    );
+
 }

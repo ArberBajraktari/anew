@@ -7,6 +7,7 @@ import { useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useQuery } from "react-query";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge"
 const supabase = createClientComponentClient();
 
 interface TaskProps {
@@ -41,7 +42,7 @@ export default function Task({ name, description, task_number, project_id, prior
         isLoading: isLoadingChapters,
         error: errorChapters,
         data: dataChapters
-      } = useQuery("chapters_" + name, () => getTasks(project_id));
+      } = useQuery("chapters_" + name, () => getTasks(chapter_id));
 
     const [isHovered, setIsHovered] = useState(false);
 
@@ -64,8 +65,8 @@ export default function Task({ name, description, task_number, project_id, prior
 
     if (dataChapters ) {
         return (
-            <div className="flex justify-center items-center">
-                <Link href={`/tasks/${task_id}`}>
+            <Link href={`/tasks/${task_id}`} >
+                <div className="flex justify-center items-center">
                     <div className={`w-3/4 h-10 rounded-lg p-3 mt-1 mb-2 bg-white ${isHovered ? "border-sky-400 border" : ""} items-center`}
                             onMouseEnter={handleMouseEnter}
                             onMouseLeave={handleMouseLeave}>
@@ -73,11 +74,12 @@ export default function Task({ name, description, task_number, project_id, prior
                         <div className="col-span-1">Task-{task_id}:</div>
                         <div className="col-span-5 text-left">{name}</div>
                         <div className="col-span-1"></div>
-                        <div className="col-span-1">01</div>
+                        <div className="col-span-1"><Badge variant={"secondary"}>chapter</Badge></div>
                         </div>
                     </div>
-                </Link>
-            </div>
+                
+                </div>
+            </Link>
 
         )
     }
