@@ -6,6 +6,7 @@ import x from "app/images/chapter_icon.png"
 import { useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useQuery } from "react-query";
+import Link from "next/link";
 const supabase = createClientComponentClient();
 
 interface TaskProps {
@@ -13,8 +14,9 @@ interface TaskProps {
     name: string;
     description: string;
     task_number: number;
-    chapter_id: number;
+    task_id: number;
     project_id: number;
+    chapter_id: number;
     status: boolean;
     follow_up?: string;
     priority: number;
@@ -33,7 +35,7 @@ async function getTasks(chapter_id: number) {
     return tasks || [];
 }
 
-export default function Task({ name, description, task_number, project_id}: TaskProps) {
+export default function Task({ name, description, task_number, project_id, priority, status, task_id, chapter_id}: TaskProps) {
 
     const {
         isLoading: isLoadingChapters,
@@ -63,17 +65,20 @@ export default function Task({ name, description, task_number, project_id}: Task
     if (dataChapters ) {
         return (
             <div className="flex justify-center items-center">
-                <button className={`w-3/4 h-10 rounded-lg p-3 mt-1 mb-2 bg-white ${isHovered ? "border-sky-400 border" : ""}`}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}>
-                    <div className="grid grid-cols-8 gap-4 my-auto">
+                <Link href={`/tasks/${task_id}`}>
+                    <div className={`w-3/4 h-10 rounded-lg p-3 mt-1 mb-2 bg-white ${isHovered ? "border-sky-400 border" : ""} items-center`}
+                            onMouseEnter={handleMouseEnter}
+                            onMouseLeave={handleMouseLeave}>
+                        <div className="grid grid-cols-8 gap-4 my-auto mx-auto">
+                        <div className="col-span-1">Task-{task_id}:</div>
+                        <div className="col-span-5 text-left">{name}</div>
+                        <div className="col-span-1"></div>
                         <div className="col-span-1">01</div>
-                        <div className="col-span-5">05</div>
-                        <div className="col-span-1">01</div>
-                        <div className="col-span-1">01</div>
+                        </div>
                     </div>
-                </button>
+                </Link>
             </div>
+
         )
     }
 

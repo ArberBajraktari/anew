@@ -29,6 +29,7 @@ const values = [1, 2, 3, 4, 5];
 import { useWizardContext } from '../wizardContext.js';
 import { createClient } from '@supabase/supabase-js'
 import { useQuery, useQueryClient } from "react-query"
+import AcceptanceCriteria from "./ac"
 
 const Priority = ({ values, selectedValue, onSelect }: {values: any, selectedValue: any, onSelect: any}) => {
     const [selectedButton, setSelectedButton] = useState(null);
@@ -57,6 +58,11 @@ const Priority = ({ values, selectedValue, onSelect }: {values: any, selectedVal
     );
 };
 
+interface AcceptanceCriteria{
+    id: number;
+    name: string;
+}
+
 export default function Create({user}:{user: any}) {
     const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!  , process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
     const queryClient = useQueryClient();
@@ -69,6 +75,8 @@ export default function Create({user}:{user: any}) {
     const [taskName, setTaskName] = useState(''); // State to store the project name
     const [taskDesc, setTaskDesc] = useState(''); // State to store the project name
     const [projectDesc, setProjectDesc] = useState(''); // State to store the project name
+    
+    const [projectAC, setProjectAC] = useState<AcceptanceCriteria[]>([]);
     const [date, setDate] = React.useState<Date>()
 
     const {
@@ -122,6 +130,10 @@ export default function Create({user}:{user: any}) {
         go_home_chapter()
     };
 
+    const handleDeleteLabel = (idToDelete: number) => {
+        setProjectAC((prevAC) => prevAC.filter((ac) => ac.id !== idToDelete))
+      };
+
 
     async function create_item(){
         const currentDate = new Date();
@@ -156,6 +168,13 @@ export default function Create({user}:{user: any}) {
         
         queryClient.invalidateQueries("projects");
     }
+
+    async function add_ac_project(){
+            // Define the new label data
+        const temp: AcceptanceCriteria = { id: projectAC.length + 1, name: "helo" };
+        setProjectAC((prevProjectAC) => [...prevProjectAC, temp]);
+    }
+    
     async function create_chapter(){
         const currentDate = new Date();
         const { data, error } = await supabase
@@ -644,21 +663,27 @@ export default function Create({user}:{user: any}) {
                         <DialogContent className="sm:max-w-[425px]">
                             <DialogHeader>
                                 <DialogTitle>Acceptance criteria</DialogTitle>
-                                <DialogDescription>
-                                    Please insert the acceptance criteria for this project.
-                                </DialogDescription>
-                                    <Label className="wt-4 wb-4">To be accomplished:</Label>
-                                    <Checkbox disabled /> Insert your criteria.
-                                    <div className="w-full h-4">
-                                        <button>
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                            </svg>
-                                        </button>
-                                    </div>
+                            </DialogHeader>
+
+                            <Label className="wt-4 wb-4">To be accomplished:</Label>
+                            {projectAC.map((ac) => (
+                            // eslint-disable-next-line react/jsx-key
+                            <div>
+                                <AcceptanceCriteria onDelete={() => handleDeleteLabel(ac.id)}/>
+                            </div>    
+                            ))}
+
+                            <div className="w-full h-4">
+                                <button onClick={add_ac_project}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                    </svg>
+                                   
+                                </button>
+                            </div>
                                     
 
-                            </DialogHeader>
+                            
                             <DialogFooter>
                             <Button type="submit" onClick={go_home_project}>Back</Button>
                             <Button type="submit" onClick={go_home_project}>Assign</Button>

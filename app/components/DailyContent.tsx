@@ -75,8 +75,8 @@ export default function DailyContent() {
                 </div>
                 
                 {dataProjects.map((project) => (
-                 <Task key={project.id} name={project.name} description={project.description} task_number={project.task_number} project_id={project.project_id} chapter_id={0} status={false} follow_up={""} priority={0} />
-                
+                    <Task key={project.id} name={project.name} description={project.description} task_number={project.task_number} project_id={project.project_id} task_id={project.id} status={project.status} follow_up={""} priority={project.priority} chapter_id={0}/>
+                 
               ))}
             </div>          
         );
