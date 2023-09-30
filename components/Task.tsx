@@ -18,6 +18,7 @@ interface TaskProps {
     task_id: number;
     project_id: number;
     chapter_id: number;
+    chapter_name: string;
     status: boolean;
     follow_up: string;
     priority: number;
@@ -42,7 +43,7 @@ function calculateDays(deadline: string){
     return daysDifference;
 }
 
-export default function Task({ name, description, task_number, project_id, priority, status, task_id, chapter_id, late, days_late, follow_up}: TaskProps) {
+export default function Task({ name, description, task_number, project_id, priority, status, task_id, chapter_id, late, days_late, follow_up, chapter_name}: TaskProps) {
     const [isHovered, setIsHovered] = useState(false);
     const [isHoveredFollowUp, setIsHoveredFollowUp] = useState(false);
     const [followUp, setFollowUp] = useState('');
@@ -122,8 +123,8 @@ export default function Task({ name, description, task_number, project_id, prior
                                 <div className="text-right">Task-{task_id}:</div>
                             </div>
                             <div className="col-span-8 text-left flex items-center">{name}</div>
-                            <div className="col-span-2 flex items-center"></div>
-                            <div className="col-span-1 flex items-center"><Badge variant={"outline"} className="border-sky-300 bg-sky-300 text-white">chapter</Badge></div>
+                            <div className="col-span-1 flex items-center"></div>
+                            <div className="col-span-2 flex items-center"><Badge variant={"outline"} className="border-sky-300 bg-sky-300 text-white">{chapter_name}</Badge></div>
                         </div>
                     </div>
                 </div>
@@ -144,8 +145,8 @@ export default function Task({ name, description, task_number, project_id, prior
                                     <div className="text-right">Task-{task_id}:</div>
                                 </div>
                                 <div className="col-span-8 text-left flex items-center">{name}</div>
-                                <div className="col-span-2 flex items-center"></div>
-                                <div className="col-span-1 flex items-center"><Badge variant={"outline"} className="border-sky-300 bg-sky-300 text-white">chapter</Badge></div>
+                                <div className="col-span-1 flex items-center"></div>
+                                <div className="col-span-2 flex items-center"><Badge variant={"outline"} className="border-sky-300 bg-sky-300 text-white">{chapter_name}</Badge></div>
                             </div>
                         </div>
                     </div>
@@ -172,8 +173,8 @@ export default function Task({ name, description, task_number, project_id, prior
                                                     <div className="col-span-1 flex justify-end items-center">
                                                         <div className="text-right">Task-{task_id}:</div>
                                                     </div>
-                                                    <div className="col-span-6 text-left flex items-center">{name}</div>
-                                                    <div className="col-span-1 flex items-center"><Badge variant={"outline"} className="border-sky-300 bg-sky-300 text-white">chapter</Badge></div>
+                                                    <div className="col-span-5 text-left flex items-center">{name}</div>
+                                                    <div className="col-span-2 flex items-center"><Badge variant={"outline"} className="border-sky-300 bg-sky-300 text-white">{chapter_name}</Badge></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -216,8 +217,9 @@ export default function Task({ name, description, task_number, project_id, prior
                                     <div className="text-right">Task-{task_id}:</div>
                                 </div>
                                 <div className="col-span-8 text-left flex items-center">{name}</div>
-                                <div className="col-span-2 flex items-center"></div>
-                                <div className="col-span-1 flex items-center"><Badge variant={"outline"} className="border-sky-300 bg-sky-300 text-white">chapter</Badge></div>
+                                <div className="col-span-1 flex items-center"></div>
+                                <div className="col-span-2 flex items-center">
+                                    <Badge variant={"outline"} className="border-sky-300 bg-sky-300 text-white">{chapter_name}</Badge></div>
                             </div>
                         </div>
                     

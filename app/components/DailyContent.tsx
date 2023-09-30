@@ -25,7 +25,7 @@ async function getTasks() {
     if(user){
         const { data, error } = await supabase
         .from('tasks')
-        .select('*')
+        .select('*, chapters(chapter_name)')
         .eq('user_id', user.id)
         .eq('deadline', formattedDate)
 
@@ -38,7 +38,8 @@ async function getTasks() {
             const tasksDone = data.filter((task) => task.status === true);
             const reorderedTasks = [...tasksToday, ...tasksFollowedUp, ...tasksDone];
 
-            const { data: late_data, error: late_error } = await supabase.from('tasks').select("*").eq('user_id', user.id).lt('deadline', formattedDate).eq('status', false).order('deadline');
+            const { data: late_data, error: late_error } = await supabase.from('tasks').select("*, chapters(chapter_name)").eq('user_id', user.id).lt('deadline', formattedDate).eq('status', false).order('deadline');
+            
             if (late_error) {
                 console.error('Error fetching late tasks:', late_error.message);
             }
@@ -49,7 +50,7 @@ async function getTasks() {
                 const late = item.deadline < formattedDate ? true : false;
                 return { ...item, late };
             });     
-            
+            console.log(modifiedData)
 
             return modifiedData || [];
         }
@@ -129,6 +130,7 @@ export default function DailyContent() {
                             follow_up={project.follow_up === null ? "0" : project.follow_up}
                             priority={project.priority}
                             chapter_id={0}
+                            chapter_name={project.chapters?.chapter_name}
                             late={project.late}
                             days_late={calculateDaysDifference(formattedDate, project.deadline)}
                         />
