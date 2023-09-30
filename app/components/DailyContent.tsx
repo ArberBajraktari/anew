@@ -23,15 +23,57 @@ async function getTasks() {
         data: { user },
     } = await supabase.auth.getUser()
     if(user){
-        const { data, error } = await supabase.from('tasks').select("*").eq('user_id', user.id).eq('deadline', formattedDate);
+        const { data, error } = await supabase
+        .from('tasks')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('deadline', formattedDate)
 
         if (error) {
-            console.error('Error fetching projects:', error.message);
+            console.error('Error fetching tasks:', error.message);
         }
-        return data || [];
+        if(data){
+            const tasksToday = data.filter((task) => task.status === false && task.follow_up == null);
+            const tasksFollowedUp = data.filter((task) => task.status === false && task.follow_up !== null);
+            const tasksDone = data.filter((task) => task.status === true);
+            const reorderedTasks = [...tasksToday, ...tasksFollowedUp, ...tasksDone];
+
+            const { data: late_data, error: late_error } = await supabase.from('tasks').select("*").eq('user_id', user.id).lt('deadline', formattedDate).eq('status', false).order('deadline');
+            if (late_error) {
+                console.error('Error fetching late tasks:', late_error.message);
+            }
+
+            const combinedData = (late_data || []).concat(reorderedTasks || []);
+
+            const modifiedData = combinedData.map((item) => {
+                const late = item.deadline < formattedDate ? true : false;
+                return { ...item, late };
+            });     
+            
+
+            return modifiedData || [];
+        }
+        
+
+
+        
     }else{
         return [];
     }
+}
+
+function calculateDaysDifference(today: any, before: any) {
+    // Convert the date strings to JavaScript Date objects
+    const jsDate1: any = new Date(today);
+    const jsDate2: any = new Date(before);
+
+    // Calculate the time difference in milliseconds
+    const timeDifference = jsDate1 - jsDate2;
+
+    // Calculate the number of days
+    const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+    return daysDifference;
 }
 
 export default function DailyContent() {
@@ -74,10 +116,24 @@ export default function DailyContent() {
                     </div>
                 </div>
                 
-                {dataProjects.map((project) => (
-                    <Task key={project.id} name={project.name} description={project.description} task_number={project.task_number} project_id={project.project_id} task_id={project.id} status={project.status} follow_up={""} priority={project.priority} chapter_id={0}/>
-                 
-              ))}
+                {dataProjects.map((project) => {
+                    return (
+                        <Task
+                            key={project.id}
+                            name={project.name}
+                            description={project.description}
+                            task_number={project.task_number}
+                            project_id={project.project_id}
+                            task_id={project.id}
+                            status={project.status}
+                            follow_up={project.follow_up === null ? "0" : project.follow_up}
+                            priority={project.priority}
+                            chapter_id={0}
+                            late={project.late}
+                            days_late={calculateDaysDifference(formattedDate, project.deadline)}
+                        />
+                        );
+                    })}
             </div>          
         );
       }

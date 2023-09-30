@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="en" className="">
       
 
-      <body className="flex flex-col h-screen w-screen bg-[#F3F3F3]">
+      <body className="flex flex-col h-screen w-screen bg-white">
       <ReactQueryProvider>
       <main className="grid grid-rows-10 grid-flow-row">
         <div className="row-span-1 sticky top-0 z-10">
