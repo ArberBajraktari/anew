@@ -36,8 +36,8 @@ export default function RootLayout({
             <div className="col-span-6">
               {children}
             </div>
-            <div className="col-span-2 relative">
-              <div className="sticky min-h-[90vh] top-[10%] bg-[#CFE3F6]">
+            <div className="col-span-2">
+              <div className="sticky h-[90vh] top-[10%] bg-[#CFE3F6]">
                 <Platform />
               </div>
             </div>

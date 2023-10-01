@@ -38,7 +38,7 @@ async function getTasks() {
             const tasksDone = data.filter((task) => task.status === true);
             const reorderedTasks = [...tasksToday, ...tasksFollowedUp, ...tasksDone];
 
-            const { data: late_data, error: late_error } = await supabase.from('tasks').select("*, chapters(chapter_name)").eq('user_id', user.id).lt('deadline', formattedDate).eq('status', false).order('deadline');
+            const { data: late_data, error: late_error } = await supabase.from('tasks').select("*, chapters(chapter_name)").eq('user_id', user.id).lt('deadline', formattedDate).eq('status', false).is('follow_up', null).order('deadline');
             
             if (late_error) {
                 console.error('Error fetching late tasks:', late_error.message);
