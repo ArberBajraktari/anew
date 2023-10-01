@@ -39,7 +39,7 @@ export default function TaskPage() {
         data: { user },
     } = await supabase.auth.getUser()
     if(user){
-        const { data, error } = await supabase.from('tasks').select("*").eq('user_id', user.id).eq('id',id)
+        const { data, error } = await supabase.from('tasks').select("*, sub_tasks(id, name, status, sub_order)").eq('user_id', user.id).eq('id',id)
   
   
         console.log(user.id, id)
@@ -94,6 +94,8 @@ export default function TaskPage() {
           }
 
             day_diff={calculateDays(data[0].deadline)}
+            sub_tasks={data[0].sub_tasks}
+            task_id={data[0].id}
             />
           </div>
           <div className='col-span-3'>
